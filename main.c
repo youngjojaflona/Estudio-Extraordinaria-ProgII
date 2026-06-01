@@ -26,32 +26,43 @@ TipoLicenciaPlugin* buscarLicenciaPorDesarrollador(char* nombreFichero, char* de
     FILE* fichero = fopen(nombreFichero, "r");
     if (fichero == NULL) { printf("no abierto"); return NULL; }
 
-    // Reserva de memoria para la estructura.
-    // Como ninguno de los campos del struct es un puntero*, solo hacemos un malloc.
-    TipoLicenciaPlugin* plugin = (TipoLicenciaPlugin*)malloc(sizeof(TipoLicenciaPlugin));
-    if (plugin == NULL) { printf("no reserva"); return NULL; }
-
-    // Buffer de linea
+    // Buffer de datos
     char linea[MAX_LINEA];
+    char auxTipo[20];
+    char auxName[CHAR_LIZ];
+    float auxPrice;
 
     // Recorrido del fichero
     while (fgets(linea, sizeof(linea), fichero) != NULL) {
-        sscanf(linea, "%i %f %s", plugin->tipoLicencia, plugin->precioMensual, plugin->nombreDesarrollador);
-        printf("linea pillada\n");
-        if (strcmp(plugin->nombreDesarrollador, desarrolladorBuscado) == 0) {
+        sscanf(linea, "%s %f %s", auxTipo, &auxPrice, auxName);
+
+        if (strcmp(auxName, desarrolladorBuscado) == 0) {
+
+            // Reserva de memoria para la estructura.
+            // Como ninguno de los campos del struct es un puntero*, solo hacemos un malloc.
+            TipoLicenciaPlugin* plugin = (TipoLicenciaPlugin*)malloc(sizeof(TipoLicenciaPlugin));
+            if (plugin == NULL) { fclose(fichero); return NULL; }
+
+            // Rellenar campos
+            strcpy(plugin->nombreDesarrollador, auxName);
+            plugin->precioMensual = auxPrice;
+            if (strcmp(auxTipo, "DEMO") == 0) { plugin->tipoLicencia = DEMO; }
+            else if (strcmp(auxTipo, "SUSCRIPCION") == 0) { plugin->tipoLicencia = SUSCRIPCION; }
+            else if (strcmp(auxTipo, "PERPETUA") == 0) { plugin->tipoLicencia = PERPETUA; }
+
+            // Cerrar y devolver
             fclose(fichero);
             return plugin;
         }
     }
     fclose(fichero);
-    free(plugin);
     return NULL;
 }
 
 int main(void) {
 
-    TipoLicenciaPlugin* plugin = buscarLicenciaPorDesarrollador("Plugins.txt", "Waves");
-    printf("Precio de %s: %f\n", plugin->nombreDesarrollador, plugin->precioMensual);
+    TipoLicenciaPlugin* plugin = buscarLicenciaPorDesarrollador("Plugins.txt", "Soundtoys");
+    printf("Precio de %s: %.2f\n", plugin->nombreDesarrollador, plugin->precioMensual);
     free(plugin);
 
     return 0;

@@ -1,0 +1,13 @@
+//
+// Created by jonyf on 02/06/2026.
+//
+
+#ifndef TDAS_EXTRAOD_26_PAQUETEPOSTALABSTRACT_H
+#define TDAS_EXTRAOD_26_PAQUETEPOSTALABSTRACT_H
+
+
+class PaquetePostalAbstract {
+};
+
+
+#endif //TDAS_EXTRAOD_26_PAQUETEPOSTALABSTRACT_H

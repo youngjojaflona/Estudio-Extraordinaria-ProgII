@@ -7,7 +7,8 @@
 #include "PluginAudio.h"
 #include "PluginAudioAbstract.h"
 
-int main() {
+#pragma region MAIN GEMINI PLUGINS
+int main1() {
 
     // Ejemplo de ceacion de objeto y uso de aplanar()
     PluginAudio EQ(9.99, "Pro-Q3");
@@ -37,5 +38,20 @@ int main() {
     delete miPlugin;
 
     return 0;
+}
 
+#pragma endregion
+
+#pragma region MAIN GEMINI LOGISTICA
+#include "PaquetePostal.h"
+
+int main() {
+
+    PaquetePostal miPaquete("Arturia MiniLab 3", 3.25);
+
+    if (miPaquete.esLigero()) {
+        std::cout << miPaquete.resumir() << std::endl;
+    }
+
+    return 0;
 }

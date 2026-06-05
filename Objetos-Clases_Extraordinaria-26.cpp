@@ -46,7 +46,7 @@ int main1() {
 #include "PaquetePostal.h"
 #include "PaquetePostalAbstract.h"
 
-int main() {
+int main_log() {
 
     // Clase inicial
     PaquetePostal miPaquete("Arturia MiniLab 3", 3.25);
@@ -67,6 +67,33 @@ int main() {
     double tarifaPaquetito = paquetito->calcularTarifaEnvio(700);
     std::cout << tarifaPaquetito << std::endl;
     delete paquetito;
+
+    return 0;
+}
+
+#pragma endregion
+
+#pragma region PRUEBA PERSONAL
+#include "RazaHumana.h"
+
+int main() {
+
+    Moro riadChouChou(1.78, 20);
+    Panchito jonathan(1.71, 20);
+
+    std::cout << riadChouChou.fraseTipica() << std::endl;
+    if (riadChouChou.getTono() > 0) {
+        std::stringstream ss;
+        ss << "Tono de piel: " << riadChouChou.getTono() << ". Mmm demasiado oscurito para mi gusto.";
+        std::cout << ss.str() << std::endl;
+    }
+
+    std::cout << jonathan.fraseTipica() << std::endl;
+    if (jonathan.getTono() > 0) {
+        std::stringstream ss;
+        ss << "Tono de piel: " << jonathan.getTono() << ". Mmm demasiado oscurito para mi gusto.";
+        std::cout << ss.str() << std::endl;
+    }
 
     return 0;
 }

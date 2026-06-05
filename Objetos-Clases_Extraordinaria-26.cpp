@@ -44,14 +44,29 @@ int main1() {
 
 #pragma region MAIN GEMINI LOGISTICA
 #include "PaquetePostal.h"
+#include "PaquetePostalAbstract.h"
 
 int main() {
 
+    // Clase inicial
     PaquetePostal miPaquete("Arturia MiniLab 3", 3.25);
 
     if (miPaquete.esLigero()) {
         std::cout << miPaquete.resumir() << std::endl;
     }
+
+    // Clase abstracta
+    PaquetePostalAbstract* paqueton = new PaqueteNacional("90210", 3.99);
+
+    double tarifaPaqueton = paqueton->calcularTarifaEnvio(60.5);
+    std::cout << tarifaPaqueton << std::endl;
+
+    delete paqueton;
+
+    PaquetePostalAbstract* paquetito = new PaqueteInternacional("28903", 0.006);
+    double tarifaPaquetito = paquetito->calcularTarifaEnvio(700);
+    std::cout << tarifaPaquetito << std::endl;
+    delete paquetito;
 
     return 0;
 }

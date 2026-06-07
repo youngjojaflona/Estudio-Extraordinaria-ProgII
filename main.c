@@ -118,13 +118,64 @@ TipoEnvioPaquete* buscarMasPesadoPorCiudad(char* nombreFichero, char* ciudadBusc
     fclose(fichero);
 }
 
-int main() {
+int main_log() {
 
     TipoEnvioPaquete* miPaquete = buscarMasPesadoPorCiudad("Logistica.txt", "TOKYO");
     printf("Paquete de %s encontrado. Peso: %.2fkg. Nivel de urgencia: %d"
         , miPaquete->codigoCiudad, miPaquete->pesoKilos, miPaquete->tipoUrgencia);
 
     free(miPaquete);
+
+    return 0;
+}
+
+#pragma endregion
+
+#pragma region TAD CON PUNTERO
+#define CHAR_AUD 16
+
+enum TipoFormato {
+    WAV,
+    MP3,
+    FLAC
+};
+
+typedef struct {
+    char identificador[CHAR_AUD];
+    enum TipoFormato formato;
+    int totalElementos;
+    float* datosPCM;
+} TipoMuestraAudio;
+
+TipoMuestraAudio* crearMuestra(char* id, enum TipoFormato formato, int numElementos) {
+
+    TipoMuestraAudio* miMuestra = (TipoMuestraAudio*) malloc(sizeof(TipoMuestraAudio));
+    if (miMuestra == NULL) { return NULL; }
+
+    strcpy(miMuestra->identificador, id);
+    miMuestra->formato = formato;
+    miMuestra->totalElementos = numElementos;
+    miMuestra->datosPCM = (float*) calloc(numElementos, sizeof(float));
+    if (miMuestra->datosPCM == NULL) { free(miMuestra); return NULL; }
+
+    return miMuestra;
+}
+
+void destruirMuestra(TipoMuestraAudio* muestra) {
+
+    // Control de seguridad
+    if (muestra != NULL) {
+
+        if (muestra->datosPCM != NULL) { free(muestra->datosPCM); }
+
+        free(muestra);
+    }
+}
+
+int main() {
+
+    TipoMuestraAudio* muestra1 = crearMuestra("Cry Baby", WAV, 10);
+    destruirMuestra(muestra1);
 
     return 0;
 }

@@ -28,13 +28,14 @@ public:
     // Constructora y destructora virtual
     RazaHumana();
     RazaHumana(float altura, int edad):
-    tono(tono), altura(altura), edad(edad) {}
+    tono(tono), altura(altura), edad(edad) { count++; }
     virtual ~RazaHumana();
 
     // Getters
     TipoTono getTono() const { return this->tono; }
     float getAltura() const { return this->altura; }
     int getEdad() const { return this->edad; }
+    static int getCount()  { return count; }
 
     // Setters
     void setTono(TipoTono tono){ this->tono = tono; }
@@ -67,5 +68,14 @@ public:
     std::string fraseTipica() override;
 };
 
+class Negro : public RazaHumana {
+public:
+    // Constr y destr
+    Negro();
+    Negro(float altura, int edad): RazaHumana(altura ,edad) { this->tono = NEGRO; }
+
+    //Metodo
+    std::string fraseTipica() override;
+};
 
 #endif //TDAS_EXTRAOD_26_RAZAHUMANA_H

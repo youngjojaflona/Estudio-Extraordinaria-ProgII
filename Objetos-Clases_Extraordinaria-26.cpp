@@ -95,5 +95,24 @@ int main() {
         std::cout << ss.str() << std::endl;
     }
 
+    if (RazaHumana::getCount() < 3) {
+        std::cout << "Total de personas: " << std::to_string(RazaHumana::getCount()) << ". Bueno, está bien." << std::endl;
+    } else { std::cout << "Total de personas: " << std::to_string(RazaHumana::getCount()) << ". Demasiados" << std::endl;}
+
+    Negro chemita(1.96, 19);
+
+    std::cout << chemita.fraseTipica() << std::endl;
+    if (chemita.getTono() > 0) {
+        std::stringstream ss;
+        ss << "Tono de piel: " << chemita.getTono() << ". Mmm demasiado oscurito para mi gusto.";
+        std::cout << ss.str() << std::endl;
+    }
+
+    if (RazaHumana::getCount() < 3) {
+        std::cout << "Total de personas: " << std::to_string(RazaHumana::getCount()) << ". Bueno, esta bien." << std::endl;
+    } else { std::cout << "Total de personas: " << std::to_string(RazaHumana::getCount()) << ". Demasiados" << std::endl;}
+
     return 0;
 }
+
+#pragma endregion

@@ -172,7 +172,7 @@ void destruirMuestra(TipoMuestraAudio* muestra) {
     }
 }
 
-int main() {
+int main_point() {
 
     TipoMuestraAudio* muestra1 = crearMuestra("Cry Baby", WAV, 10);
     destruirMuestra(muestra1);
@@ -181,3 +181,109 @@ int main() {
 }
 
 #pragma endregion
+
+#pragma region LECTURA Y ESCRITURA DE FICHEROS
+// Busco hacer una función que escriba TDAs en un fichero y luego los lea
+#define CHAR_PERF 32
+
+enum TipoEstacion {
+    PRIMAVERA = 1,
+    VERANO,
+    OTONYO,
+    INVIERNO
+};
+
+typedef struct {
+    char marca[CHAR_PERF];
+    char version[CHAR_PERF];
+    char notaMain[CHAR_PERF];
+    enum TipoEstacion estacion;
+    double precio;
+} TipoPerfume;
+
+TipoPerfume* crearPerfume(char* marca, char*version, char* notaMain, enum TipoEstacion estacion, double precio) {
+
+    TipoPerfume* miPerfume = (TipoPerfume*) malloc(sizeof(TipoPerfume));
+    if (miPerfume == NULL) { return NULL; }
+
+    strcpy(miPerfume->marca, marca);
+    strcpy(miPerfume->version, version);
+    strcpy(miPerfume->notaMain, notaMain);
+    miPerfume->estacion = estacion;
+    miPerfume->precio = precio;
+
+    return miPerfume;
+}
+
+void destruirPerfume(TipoPerfume* perfume) {
+    if (perfume != NULL) {
+        free(perfume);
+    }
+}
+
+TipoPerfume* searchMarcaPerfume(char* marcaBuscada) {
+
+    FILE* fichero = fopen("Perfumes.txt", "r");
+    if (fichero == NULL) { perror("Error al abrir el fichero"); return NULL; }
+
+    char linea[MAX_LINEA];
+    char auxMarca[CHAR_PERF];
+    char auxVersion[CHAR_PERF];
+    char auxNotaMain[CHAR_PERF];
+    float auxPrecio;
+    enum TipoEstacion auxEstacion;
+
+    while (fgets(linea, sizeof(linea), fichero)) {
+        sscanf(linea, "%[^,],%[^,],%[^,],%d,%f", auxMarca, auxVersion, auxNotaMain, &auxEstacion, &auxPrecio);
+
+        if (strcmp(auxMarca, marcaBuscada) == 0) {
+            TipoPerfume* perfume = crearPerfume(auxMarca, auxVersion, auxNotaMain, auxEstacion, auxPrecio);
+
+            fclose(fichero);
+            return perfume;
+        }
+    }
+
+    fclose(fichero);
+    return NULL;
+}
+
+void addPerfume(TipoPerfume perfume) {
+
+    FILE* fichero = fopen("Perfumes.txt", "a");
+    if (fichero == NULL) { perror("Error al abrir el fichero"); return; }
+
+    fprintf(fichero, "%s,%s,%s,%d,%f\n",
+        perfume.marca, perfume.version, perfume.notaMain, perfume.estacion, perfume.precio);
+
+    fclose(fichero);
+}
+
+void muestraPerfume(TipoPerfume perfume) {
+
+    printf("Nombre: %s %s\nNota principal: %s\n", perfume.marca, perfume.version, perfume.notaMain);
+    if (perfume.estacion == PRIMAVERA) { printf("Estacion principal: Primaavera\n"); }
+    else if (perfume.estacion == VERANO) { printf("Estacion principal: Verano\n"); }
+    else if (perfume.estacion == OTONYO) { printf("Estacion principal: Otonyo\n"); }
+    else if (perfume.estacion == INVIERNO) { printf("Estacion principal: Invierno\n"); }
+    printf("Precio: %.2f", perfume.precio);
+
+}
+
+void limpiaFichero(char* nameFichero) {
+    FILE* fichero = fopen(nameFichero, "w");
+    if (fichero != NULL) { fclose(fichero); }
+}
+
+int main() {
+
+    TipoPerfume* perfumeJony = crearPerfume("Givenchy", "gentleman society", "talco", INVIERNO, 75.99);
+
+    addPerfume(*perfumeJony);
+
+    TipoPerfume* perfumeBuscado = searchMarcaPerfume("Givenchy");
+
+    muestraPerfume(*perfumeBuscado);
+
+    return 0;
+}

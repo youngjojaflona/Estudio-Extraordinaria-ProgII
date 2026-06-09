@@ -183,7 +183,7 @@ int main_point() {
 #pragma endregion
 
 #pragma region LECTURA Y ESCRITURA DE FICHEROS
-// Busco hacer una función que escriba TDAs en un fichero y luego los lea
+// Busco hacer una función que escriba TDAs en un fichero txt y luego los lea
 #define CHAR_PERF 32
 
 enum TipoEstacion {
@@ -275,15 +275,111 @@ void limpiaFichero(char* nameFichero) {
     if (fichero != NULL) { fclose(fichero); }
 }
 
+
+// Ahora en un fichero binario
+
+void addPerfumeBin(TipoPerfume* perfume) {
+
+    FILE* fichero = fopen("PerfumesBin.bin", "ab");
+    if (fichero == NULL) { perror("Error al abrir el fichero"); return; }
+
+    fwrite(perfume, sizeof(TipoPerfume), 1, fichero);
+
+    fclose(fichero);
+}
+
+TipoPerfume* searchPerfumeMarcaBin(char* nameMarca) {
+
+    FILE* fichero = fopen("PerfumesBin.bin", "rb");
+    if (fichero == NULL) { return NULL; }
+
+    TipoPerfume* buscado = (TipoPerfume*) malloc(sizeof(TipoPerfume));
+    if (buscado == NULL) { return NULL; }
+
+    // Recorremos con fread en la condicion
+    while (fread(buscado, sizeof(TipoPerfume), 1, fichero)) {
+        if (strcmp(buscado->marca, nameMarca) == 0) {
+            fclose(fichero);
+            return buscado;
+        }
+    }
+
+    free(buscado);
+    fclose(fichero);
+    return NULL;
+}
+
+
 int main() {
 
     TipoPerfume* perfumeJony = crearPerfume("Givenchy", "gentleman society", "talco", INVIERNO, 75.99);
 
-    addPerfume(*perfumeJony);
+    addPerfumeBin(perfumeJony);
 
-    TipoPerfume* perfumeBuscado = searchMarcaPerfume("Givenchy");
+    TipoPerfume* perfumeBuscado = searchPerfumeMarcaBin("Givenchy");
 
     muestraPerfume(*perfumeBuscado);
 
+    destruirPerfume(perfumeJony);
+    destruirPerfume(perfumeBuscado);
+
     return 0;
+}
+
+#pragma endregion
+
+#pragma region SEGUNDO EXAMEN 25/26
+#define CHAR_PROV 11
+
+enum TipoPago {
+    GRATIS,
+    TRANSFERENCIA,
+    TARJETA
+};
+
+typedef struct {
+    char nombreProveedor[CHAR_PROV];
+    double precioMensual;
+    enum TipoPago formaPago;
+} TipoSubscripcionIA;
+
+
+TipoSubscripcionIA* buscar(char* nombreFichero, char* filtroPorveedor) {
+
+    FILE* fichero = fopen(nombreFichero, "r");
+    if (fichero == NULL) { return NULL; }
+
+    char buffer[1025];
+    char auxNombre[CHAR_PROV];
+    float auxPrecio;
+    char auxFormaPago[20];
+    enum TipoPago pagoMapeado;
+
+    while (fgets(buffer, sizeof(buffer), fichero)) {
+        if (sscanf(buffer, "%s %f %s", auxNombre, &auxPrecio, auxFormaPago)) {
+
+            int pagoValido = 0;
+            if (strcmp(auxFormaPago, "GRATIS") == 0) { pagoMapeado = GRATIS; }
+            else if (strcmp(auxFormaPago, "TRANSFERENCIA") == 0) { pagoMapeado = TRANSFERENCIA; }
+            else if (strcmp(auxFormaPago, "TARJETA") == 0) { pagoMapeado = TARJETA; }
+            else { pagoValido = 0; }
+
+            if (!pagoValido) { continue; }
+
+            if (strcmp(auxNombre, filtroPorveedor) == 0) {
+                TipoSubscripcionIA* suscripcion =(TipoSubscripcionIA*) malloc(sizeof(TipoSubscripcionIA));
+                if (suscripcion == NULL) { fclose(fichero); return NULL; }
+
+                strcpy(suscripcion->nombreProveedor, auxNombre);
+                suscripcion->precioMensual = auxPrecio;
+                suscripcion->formaPago = pagoMapeado;
+
+                fclose(fichero);
+                return suscripcion;
+            }
+        }
+    }
+
+    fclose(fichero);
+    return NULL;
 }

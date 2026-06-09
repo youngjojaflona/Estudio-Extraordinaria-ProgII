@@ -10,4 +10,6 @@ add_executable(Objetos_Clases Objetos-Clases_Extraordinaria-26.cpp
         PaquetePostal.h
         PaquetePostalAbstract.h
         RazaHumana.cpp
-        RazaHumana.h)
+        RazaHumana.h
+        ProveedorIA.h
+        ProveedorIAAbstract.h)

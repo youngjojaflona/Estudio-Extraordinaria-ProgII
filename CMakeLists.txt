@@ -12,4 +12,5 @@ add_executable(Objetos_Clases Objetos-Clases_Extraordinaria-26.cpp
         RazaHumana.cpp
         RazaHumana.h
         ProveedorIA.h
-        ProveedorIAAbstract.h)
+        ProveedorIAAbstract.h
+        Figura.h)

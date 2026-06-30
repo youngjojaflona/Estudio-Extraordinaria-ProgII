@@ -201,7 +201,7 @@ typedef struct {
     double precio;
 } TipoPerfume;
 
-TipoPerfume* crearPerfume(char* marca, char*version, char* notaMain, enum TipoEstacion estacion, double precio) {
+TipoPerfume* crearPerfume(char* marca, char* version, char* notaMain, enum TipoEstacion estacion, double precio) {
 
     TipoPerfume* miPerfume = (TipoPerfume*) malloc(sizeof(TipoPerfume));
     if (miPerfume == NULL) { return NULL; }
@@ -310,7 +310,7 @@ TipoPerfume* searchPerfumeMarcaBin(char* nameMarca) {
 }
 
 
-int main() {
+int main_exam() {
 
     TipoPerfume* perfumeJony = crearPerfume("Givenchy", "gentleman society", "talco", INVIERNO, 75.99);
 
@@ -383,3 +383,132 @@ TipoSubscripcionIA* buscar(char* nombreFichero, char* filtroPorveedor) {
     fclose(fichero);
     return NULL;
 }
+
+#pragma endregion
+
+#pragma region COMIDA
+#define CHAR_COM 21
+
+enum TipoPlato{
+    COMIDA,
+    BEBIDA,
+    POSTRE
+};
+
+typedef struct {
+    char nombre[CHAR_COM];
+    double precio;
+    enum TipoPlato tipo;
+    int* id;
+} TipoComida;
+
+TipoComida* creaComida(char auxNombre[], double auxPrecio, enum TipoPlato auxTipo, int auxId) {
+
+    TipoComida* comida = (TipoComida*) malloc(sizeof(TipoComida));
+    if (comida == NULL) { return NULL; }
+
+    strcpy(comida->nombre, auxNombre);
+    comida->precio = auxPrecio;
+    comida->tipo = auxTipo;
+
+    comida->id = (int*)malloc(sizeof(int));
+    if (comida->id == NULL) {  free(comida); return NULL; }
+    *comida->id = auxId;
+
+    return comida;
+}
+
+int escribeComida(TipoComida* comida, char nombreFichero[]) {
+
+    FILE* fichero = fopen(nombreFichero, "ab");
+    if (fichero == NULL) { return 0; }
+
+    fwrite(comida, sizeof(TipoComida), 1, fichero);
+
+    fclose(fichero);
+    return 1;
+}
+
+#pragma endregion
+
+#pragma region EMPLEO
+
+typedef enum {
+    JUNIOR,
+    SENIOR,
+    MANAGER
+} Categoria;
+
+typedef struct {
+    int identificador;
+    char nombre[50];
+    Categoria categoria;
+    float salario;
+    char* departamento;
+} TipoEmpleado;
+
+TipoEmpleado* creaEmpleado(int id, char nombre[], Categoria cat, float salario, char depart) {
+
+    TipoEmpleado* miEmpleado = (TipoEmpleado*) malloc(sizeof(TipoEmpleado));
+    if (miEmpleado == NULL) { return NULL; }
+
+    char* miDepart = (char*) malloc(sizeof(char));
+    if (miDepart == NULL) { free(miEmpleado); return NULL; }
+    *miDepart = depart;
+
+    miEmpleado->departamento = miDepart;
+    strcpy(miEmpleado->nombre, nombre);
+    miEmpleado->salario = salario;
+    miEmpleado->categoria = cat;
+    miEmpleado->identificador = id;
+
+    return miEmpleado;
+}
+
+void muestraEmpleado(TipoEmpleado* empleado) {
+
+    printf("ID: %d\nNombre: %s\nCategoria: %d\nDepartamento: %c\nSalario: %f",
+        empleado->identificador, empleado->nombre, empleado->categoria, empleado->departamento, empleado->salario);
+
+}
+
+void freeEmpleado(TipoEmpleado* empleado) {
+
+    if (empleado != NULL) { free(empleado->departamento); }
+    free(empleado);
+
+}
+
+int guardaEmpleadoFichero(TipoEmpleado* empleado, FILE* fichero) {
+
+    if (fichero == NULL || empleado == NULL) { return 0; }
+
+    fprintf(fichero, "%d %s %d %c %f",
+        empleado->identificador, empleado->nombre, empleado->categoria, *(empleado->departamento), empleado->salario);
+
+    return 1;
+}
+
+int main() {
+
+    TipoEmpleado* empleado1 = creaEmpleado(1, "perlita", JUNIOR, 1560, 'a');
+    TipoEmpleado* empleado2 = creaEmpleado(2, "mariano", SENIOR, 1220, 'b');
+    TipoEmpleado* empleado3 = creaEmpleado(3, "coke", MANAGER, 1950, 'a');
+
+    FILE* fichero = fopen("Empleados.txt", "w");
+    if (fichero == NULL) { return 0; }
+
+    guardaEmpleadoFichero(empleado1, fichero);
+    guardaEmpleadoFichero(empleado2, fichero);
+    guardaEmpleadoFichero(empleado3, fichero);
+
+    fclose(fichero);
+
+    freeEmpleado(empleado1);
+    freeEmpleado(empleado2);
+    freeEmpleado(empleado3);
+
+    return 1;
+}
+
+#pragma endregion

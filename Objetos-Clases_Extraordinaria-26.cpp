@@ -4,6 +4,8 @@
 
 #include <iostream>
 #include <stdlib.h>
+
+#include "Figura.h"
 #include "PluginAudio.h"
 #include "PluginAudioAbstract.h"
 
@@ -76,7 +78,7 @@ int main_log() {
 #pragma region PRUEBA PERSONAL
 #include "RazaHumana.h"
 
-int main() {
+int main_personal() {
 
     Moro riadChouChou(1.78, 20);
     Panchito jonathan(1.71, 20);
@@ -119,3 +121,29 @@ int main() {
 
 #pragma region SEGUNDO EXAMEN 25/26
 
+// Archivo ProovedorIA.h
+
+#pragma endregion
+
+#pragma region FIGURAS GEOMETRICAS
+#include <vector>
+#include "Figura.h"
+
+int main() {
+
+    std::vector<Figura*> figuras;
+    Rectangulo* rectangulo = new Rectangulo(10.5, 6.2);
+    Circulo* circulo = new Circulo(3);
+
+    figuras.push_back(rectangulo);
+    figuras.push_back(circulo);
+
+    for (int i = 0; i < figuras.size(); i++) {
+        figuras[i]->mostrarInfo();
+    }
+
+    delete rectangulo;
+    delete circulo;
+
+    return 0;
+}
